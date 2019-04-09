@@ -103,7 +103,7 @@ function Poll(CHOICE_PER_ROTATION, ROTATION_NUMBER) {
   };
 }
 
-var Polling = new Poll(3,2);
+var Polling = new Poll(3,25);
 Polling.generateProducts();
 Polling.generateRandomProducts();
 Polling.renderImage(0);
