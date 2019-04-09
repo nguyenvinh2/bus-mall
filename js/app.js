@@ -1,6 +1,5 @@
 'use strict';
 
-
 function Products(productPath) {
   this.name = productPath.split('.')[0];
   this.path = `assets/${productPath}`;
@@ -9,36 +8,36 @@ function Products(productPath) {
   this.percentage;
 }
 
-function Poll(CHOICE_PER_ROTATION, ROTATION_NUMBER) {
-  this.productNameAddress = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg','dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg', 'usb.gif'
+function Poll(choicePerRotation, rotationNumber) {
+  this.productNameAddress = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'water-can.jpg', 'wine-glass.jpg', 'usb.gif'
   ];
   this.rotation = 0;
   this.productArray = [];
   this.choiceArray = [];
-  this.imagesPerTurn = CHOICE_PER_ROTATION;
-  this.MAX_TURNS = ROTATION_NUMBER;
+  this.imagesPerTurn = choicePerRotation;
+  this.maxTurns = rotationNumber;
 
-  this.generateProducts = function() {
+  this.generateProducts = function () {
     for (let i = 0; i < this.productNameAddress.length; i++) {
       let createProduct = new Products(this.productNameAddress[i]);
       this.productArray.push(createProduct);
     }
   };
 
-  this.generateRandomProducts = function() {
+  this.generateRandomProducts = function () {
     let tempRandomArray = [];
-    if(!this.choiceArray.length) {
+    if (!this.choiceArray.length) {
       while (tempRandomArray.length < this.imagesPerTurn) {
-        let randomNumber = Math.floor(Math.random()*this.productNameAddress.length);
-        if(!tempRandomArray.includes(randomNumber)) {
+        let randomNumber = Math.floor(Math.random() * this.productNameAddress.length);
+        if (!tempRandomArray.includes(randomNumber)) {
           tempRandomArray.push(randomNumber);
           this.productArray[randomNumber].views++;
         }
       }
     } else {
       while (tempRandomArray.length < this.imagesPerTurn) {
-        let randomNumber = Math.floor(Math.random()*this.productNameAddress.length);
-        if(!tempRandomArray.includes(randomNumber) && !this.choiceArray[this.choiceArray.length -1].includes(randomNumber)) {
+        let randomNumber = Math.floor(Math.random() * this.productNameAddress.length);
+        if (!tempRandomArray.includes(randomNumber) && !this.choiceArray[this.choiceArray.length - 1].includes(randomNumber)) {
           tempRandomArray.push(randomNumber);
           this.productArray[randomNumber].views++;
         }
@@ -47,43 +46,36 @@ function Poll(CHOICE_PER_ROTATION, ROTATION_NUMBER) {
     this.choiceArray.push(tempRandomArray);
   };
 
-  this.renderImage = function(i) {
+  this.renderImage = function (i) {
     let imageContainer = document.getElementById('image-container');
-    let fieldSet = document.createElement('fieldset');
-    imageContainer.appendChild(fieldSet);
-    for(let j = 0; j < this.choiceArray[i].length; j++) {
+    for (let j = 0; j < this.choiceArray[i].length; j++) {
+      let fieldSet = document.createElement('fieldset');
       let labelContainer = document.createElement('label');
       labelContainer.setAttribute('for', `${this.productArray[this.choiceArray[i][j]].name}`);
       let image = document.createElement('img');
       image.setAttribute('src', `${this.productArray[this.choiceArray[i][j]].path}`);
-      image.style.maxWidth= '250px';
+      image.style.maxWidth = '250px';
       let radioInput = document.createElement('input');
       radioInput.setAttribute('type', 'radio');
       radioInput.setAttribute('name', 'product-select');
       radioInput.setAttribute('id', `${this.productArray[this.choiceArray[i][j]].name}`);
       radioInput.setAttribute('value', `${this.choiceArray[i][j]}`);
-      if (j === Math.floor(this.choiceArray[i].length/2)) {
+      if (j === Math.floor(this.choiceArray[i].length / 2)) {
         radioInput.checked = true;
       }
       labelContainer.appendChild(image);
       labelContainer.appendChild(radioInput);
       fieldSet.appendChild(labelContainer);
+      imageContainer.appendChild(fieldSet);
     }
   };
 
-  let article = document.getElementsByTagName('article')[0];
-  let submit = document.createElement('input');
-  submit.setAttribute('type','button');
-  submit.setAttribute('id','vote');
-  submit.value = 'Vote';
-  article.appendChild(submit);
-
-  this.voteProduct = function(event) {
+  this.voteProduct = function (event) {
     this.rotation++;
     let imageContainer = document.getElementById('image-container');
     let productPicked = parseInt(document.querySelector('input[name=product-select]:checked').value);
     this.productArray[productPicked].vote++;
-    if(this.rotation === ROTATION_NUMBER) {
+    if (this.rotation === rotationNumber) {
       this.displayResults();
     } else {
       imageContainer.innerHTML = '';
@@ -93,24 +85,33 @@ function Poll(CHOICE_PER_ROTATION, ROTATION_NUMBER) {
     event.preventDefault();
   };
 
-  this.displayResults = function() {
+  this.displayResults = function () {
     let resultsList = document.getElementById('results');
-    for(let i = 0; i < this.productArray.length; i++) {
+    for (let i = 0; i < this.productArray.length; i++) {
       let productItem = document.createElement('li');
       productItem.textContent = `${this.productArray[i].name.toUpperCase()} - Views: ${this.productArray[i].views}, Votes: ${this.productArray[i].vote}`;
       resultsList.appendChild(productItem);
     }
   };
+
+  this.execute = function () {
+    Polling.generateProducts();
+    Polling.generateRandomProducts();
+    Polling.renderImage(this.rotation);
+    let form = document.getElementById('image-container');
+    let submit = document.createElement('button');
+    submit.setAttribute('id', 'vote');
+    submit.textContent = 'Vote';
+    form.parentNode.insertBefore(submit, form.nextSibling);
+  };
 }
 
-var Polling = new Poll(3,25);
-Polling.generateProducts();
-Polling.generateRandomProducts();
-Polling.renderImage(0);
+var Polling = new Poll(3, 25);
+Polling.execute();
 
 document.getElementById('vote').addEventListener('click', function runVote(event) {
   Polling.voteProduct(event);
-  if(Polling.rotation === Polling.MAX_TURNS) {
+  if (Polling.rotation === Polling.maxTurns) {
     document.getElementById('vote').removeEventListener('click', runVote, false);
   }
 }, false);
