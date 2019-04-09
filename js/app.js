@@ -54,18 +54,14 @@ function Poll(choicePerRotation, rotationNumber) {
       labelContainer.setAttribute('for', `${this.productArray[this.choiceArray[i][j]].name}`);
       let image = document.createElement('img');
       image.setAttribute('src', `${this.productArray[this.choiceArray[i][j]].path}`);
-      image.style.maxWidth = '250px';
       let radioInput = document.createElement('input');
       radioInput.setAttribute('type', 'radio');
       radioInput.setAttribute('name', 'product-select');
       radioInput.setAttribute('id', `${this.productArray[this.choiceArray[i][j]].name}`);
       radioInput.setAttribute('value', `${this.choiceArray[i][j]}`);
-      if (j === Math.floor(this.choiceArray[i].length / 2)) {
-        radioInput.checked = true;
-      }
       labelContainer.appendChild(image);
-      labelContainer.appendChild(radioInput);
       fieldSet.appendChild(labelContainer);
+      fieldSet.appendChild(radioInput);
       imageContainer.appendChild(fieldSet);
     }
   };
@@ -98,21 +94,18 @@ function Poll(choicePerRotation, rotationNumber) {
     Polling.generateProducts();
     Polling.generateRandomProducts();
     Polling.renderImage(this.rotation);
-    let form = document.getElementById('image-container');
-    let submit = document.createElement('button');
-    submit.setAttribute('id', 'vote');
-    submit.textContent = 'Vote';
-    form.parentNode.insertBefore(submit, form.nextSibling);
   };
 }
 
 var Polling = new Poll(3, 25);
 Polling.execute();
 
-document.getElementById('vote').addEventListener('click', function runVote(event) {
-  Polling.voteProduct(event);
+document.getElementById('image-container').addEventListener('click', function runVote(event) {
   if (Polling.rotation === Polling.maxTurns) {
     document.getElementById('vote').removeEventListener('click', runVote, false);
+  }
+  else if (document.querySelector('input[name=product-select]:checked')) {
+    Polling.voteProduct(event);
   }
 }, false);
 
