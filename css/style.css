@@ -7,7 +7,7 @@ body {
   margin: 5px auto;
 }
 
-header {
+header, article {
   text-align: center;
   margin: 25px 0;
   background-color: aliceblue;
@@ -15,7 +15,7 @@ header {
   padding: 20px;
 }
 
-h1 {
+h1, h2 {
   font-size: 40px;
   font-weight: bolder;
   text-decoration-line: underline;
@@ -30,8 +30,6 @@ header p {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  background-color: aliceblue;
-  box-shadow: 2px 2px 8px 8px rgba(0, 0, 0, .5), 4px 4px 12px 12px rgba(55, 55, 55, .5);
 }
 
 #image-container fieldset {
@@ -44,7 +42,11 @@ header p {
   width: 100%;
 }
 
-#image-container fieldset label h2{
+#image-container fieldset label{
+  cursor: pointer;
+}
+
+#image-container fieldset label h3{
   font-size: 25px;
   text-decoration-line: underline;
 }
@@ -52,9 +54,29 @@ header p {
 #image-container fieldset img{
   width: 100%;
   margin-top: 15px;
-  border-radius: 10px;
+  border-radius: 20px;
+  background-color: royalblue;
 }
 
 input[type=radio] {
   display: none;
+}
+
+#results {
+  display: none;
+}
+
+#results div {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+#results div div {
+  width: 45%;
+  margin: 25px;
+}
+
+canvas {
+  border: solid black;
 }
