@@ -173,6 +173,7 @@ function Poll(choicePerRotation, rotationNumber) {
         }
       }
     });
+    window.scrollTo(0,1000);
   };
 
   this.execute = function () {
