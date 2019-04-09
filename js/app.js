@@ -52,7 +52,7 @@ function Poll(choicePerRotation, rotationNumber) {
       let fieldSet = document.createElement('fieldset');
       let labelContainer = document.createElement('label');
       labelContainer.setAttribute('for', `${this.productArray[this.choiceArray[i][j]].name}`);
-      let imageName = document.createElement('h2');
+      let imageName = document.createElement('h3');
       imageName.textContent = `${this.productArray[this.choiceArray[i][j]].name.toUpperCase()}`;
       let image = document.createElement('img');
       image.setAttribute('src', `${this.productArray[this.choiceArray[i][j]].path}`);
@@ -69,7 +69,7 @@ function Poll(choicePerRotation, rotationNumber) {
     }
   };
 
-  this.voteProduct = function (event) {
+  this.voteProduct = function () {
     this.rotation++;
     let imageContainer = document.getElementById('image-container');
     let productPicked = parseInt(document.querySelector('input[name=product-select]:checked').value);
@@ -81,16 +81,98 @@ function Poll(choicePerRotation, rotationNumber) {
       this.generateRandomProducts();
       this.renderImage(this.rotation);
     }
-    event.preventDefault();
   };
 
   this.displayResults = function () {
-    let resultsList = document.getElementById('results');
+    let display = document.getElementById('results');
+    display.style.display = 'block';
+    let resultsRelative = document.getElementById('relative').getContext('2d');
+    let resultsAbsolute = document.getElementById('absolute').getContext('2d');
+    let relativeData = [];
+    let absoluteData = [];
+    let views = [];
+    let label = [];
+    let backColor = [];
+    let borColor = [];
+
     for (let i = 0; i < this.productArray.length; i++) {
-      let productItem = document.createElement('li');
-      productItem.textContent = `${this.productArray[i].name.toUpperCase()} - Views: ${this.productArray[i].views}, Votes: ${this.productArray[i].vote}`;
-      resultsList.appendChild(productItem);
+      let colorR = Math.floor(Math.random() * 256);
+      let colorG = Math.floor(Math.random() * 256);
+      let colorB = Math.floor(Math.random() * 256);
+      absoluteData.push(this.productArray[i].vote);
+      views.push(this.productArray[i].views);
+      relativeData.push((absoluteData[i] / views[i] * 100).toFixed(1));
+      label.push(this.productArray[i].name);
+      borColor.push(`rgba(${colorR}, ${colorG}, ${colorB}, 1)`);
+      backColor.push(`rgba(${colorR}, ${colorG}, ${colorB}, .3)`);
     }
+    // eslint-disable-next-line
+    new Chart(resultsAbsolute, {
+      type: 'bar',
+      data: {
+        labels: label,
+        datasets: [{
+          label: '# of Votes',
+          data: absoluteData,
+          backgroundColor: backColor,
+          borderColor: borColor,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: false
+            },
+            ticks: {
+              beginAtZero: true,
+              stepSize: 1
+            }
+          }]
+        }
+      }
+    });
+    // eslint-disable-next-line
+    new Chart(resultsRelative, {
+      type: 'bar',
+      data: {
+        labels: label,
+        datasets: [{
+          label: 'Percentage Clicked On',
+          data: relativeData,
+          backgroundColor: backColor,
+          borderColor: borColor,
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        scales: {
+          xAxes: [{
+            gridLines: {
+              display: false
+            }
+          }],
+          yAxes: [{
+            gridLines: {
+              display: false
+            },
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
   };
 
   this.execute = function () {
@@ -105,10 +187,11 @@ Polling.execute();
 
 document.getElementById('image-container').addEventListener('click', function runVote(event) {
   if (Polling.rotation === Polling.maxTurns) {
-    document.getElementById('vote').removeEventListener('click', runVote, false);
+    document.getElementById('image-container').removeEventListener('click', runVote, false);
   }
   else if (document.querySelector('input[name=product-select]:checked')) {
-    Polling.voteProduct(event);
+    Polling.voteProduct();
+    event.preventDefault();
   }
 }, false);
 
