@@ -52,6 +52,8 @@ function Poll(choicePerRotation, rotationNumber) {
       let fieldSet = document.createElement('fieldset');
       let labelContainer = document.createElement('label');
       labelContainer.setAttribute('for', `${this.productArray[this.choiceArray[i][j]].name}`);
+      let imageName = document.createElement('h2');
+      imageName.textContent = `${this.productArray[this.choiceArray[i][j]].name.toUpperCase()}`;
       let image = document.createElement('img');
       image.setAttribute('src', `${this.productArray[this.choiceArray[i][j]].path}`);
       let radioInput = document.createElement('input');
@@ -59,6 +61,7 @@ function Poll(choicePerRotation, rotationNumber) {
       radioInput.setAttribute('name', 'product-select');
       radioInput.setAttribute('id', `${this.productArray[this.choiceArray[i][j]].name}`);
       radioInput.setAttribute('value', `${this.choiceArray[i][j]}`);
+      labelContainer.appendChild(imageName);
       labelContainer.appendChild(image);
       fieldSet.appendChild(labelContainer);
       fieldSet.appendChild(radioInput);
