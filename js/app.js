@@ -1,11 +1,12 @@
 'use strict';
 
+var polling = new Poll(3, 25);
+
 function Products(productPath) {
   this.name = productPath.split('.')[0];
   this.path = `assets/${productPath}`;
   this.views = 0;
   this.vote = 0;
-  this.percentage;
 }
 
 function Poll(choicePerRotation, rotationNumber) {
@@ -81,6 +82,7 @@ function Poll(choicePerRotation, rotationNumber) {
       this.generateRandomProducts();
       this.renderImage(this.rotation);
     }
+    localStorage.setItem('object', JSON.stringify(this));
   };
 
   this.displayResults = function () {
@@ -92,7 +94,6 @@ function Poll(choicePerRotation, rotationNumber) {
     let absoluteData = [];
     let views = [];
     let label = [];
-
 
     for (let i = 0; i < this.productArray.length; i++) {
       absoluteData.push(this.productArray[i].vote);
@@ -135,7 +136,7 @@ function Poll(choicePerRotation, rotationNumber) {
             },
             ticks: {
               beginAtZero: true,
-              stepSize: 1
+              precision: 0
             }
           }]
         }
@@ -169,31 +170,78 @@ function Poll(choicePerRotation, rotationNumber) {
             },
             ticks: {
               beginAtZero: true
+            },
+            scaleLabel: {
+              display: true,
+              labelString: '%',
             }
           }]
         }
       }
     });
-    window.scrollTo(0,1000);
+    window.scrollTo(0, 1000);
   };
 
-  this.execute = function () {
-    Polling.generateProducts();
-    Polling.generateRandomProducts();
-    Polling.renderImage(this.rotation);
+  this.executeOrder66 = function () {
+    this.generateProducts();
+    this.generateRandomProducts();
+    this.renderImage(this.rotation);
+    localStorage.setItem('object', JSON.stringify(this));
   };
 }
-
-var Polling = new Poll(3, 25);
-Polling.execute();
+// eslint-disable-next-line
+function reset() {
+  localStorage.removeItem('object');
+  location.reload();
+}
+// eslint-disable-next-line
+function cont() {
+  if (polling.rotation === 25) {
+    let imageContainer = document.getElementById('image-container');
+    let resultsContainer = document.getElementById('results');
+    let canvasContainerOne = document.getElementById('absolute');
+    let canvasContainerTwo = document.getElementById('relative');
+    imageContainer.innerHTML = '';
+    resultsContainer.style.display = 'none';
+    canvasContainerOne.innerHTML = '';
+    canvasContainerTwo.innerHTML = '';
+    polling.rotation = 0;
+    polling.choiceArray = [];
+    polling.generateRandomProducts();
+    polling.renderImage(polling.rotation);
+    localStorage.setItem('object', JSON.stringify(polling));
+    location.reload();
+  } else {
+    alert('You haven\'t finished voting for this set yet.');
+  }
+}
 
 document.getElementById('image-container').addEventListener('click', function runVote(event) {
-  if (Polling.rotation === Polling.maxTurns) {
+  if (polling.rotation === polling.maxTurns) {
     document.getElementById('image-container').removeEventListener('click', runVote, false);
   }
   else if (document.querySelector('input[name=product-select]:checked')) {
-    Polling.voteProduct();
+    polling.voteProduct();
     event.preventDefault();
   }
 }, false);
+
+window.onload = function () {
+  let retrievedPollingData = JSON.parse(localStorage.getItem('object'));
+  if (retrievedPollingData !== null) {
+    polling.rotation = retrievedPollingData.rotation;
+    polling.productArray = retrievedPollingData.productArray;
+    polling.choiceArray = retrievedPollingData.choiceArray;
+    polling.imagesPerTurn = retrievedPollingData.imagesPerTurn;
+    polling.maxTurns = retrievedPollingData.maxTurns;
+    if (polling.rotation === polling.maxTurns) {
+      polling.renderImage(polling.rotation - 1);
+      polling.displayResults();
+    } else {
+      polling.renderImage(polling.rotation);
+    }
+  } else {
+    polling.executeOrder66();
+  }
+};
 

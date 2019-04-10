@@ -15,6 +15,11 @@ header, article {
   padding: 20px;
 }
 
+header {
+  display: flex;
+  justify-content: space-between;
+}
+
 h1, h2 {
   font-size: 40px;
   font-weight: bolder;
@@ -80,4 +85,19 @@ input[type=radio] {
 
 canvas {
   border: solid black;
+}
+/* Animate Button W3School Style */
+button {
+  height: 50px;
+  background-color: royalblue;
+  color: white;
+  border: solid cyan;
+  border-radius: 15px;
+  font-size: 25px;
+  box-shadow: 6px 6px rgba(68, 146, 215, .9);
+}
+
+button:active {
+  box-shadow: 3px 3px rgba(68, 146, 215, .9);
+  transform: translate(3px, 3px);
 }
