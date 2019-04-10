@@ -49,6 +49,7 @@ function Poll(choicePerRotation, rotationNumber) {
 
   this.renderImage = function (i) {
     let imageContainer = document.getElementById('image-container');
+    imageContainer.innerHTML = '';
     for (let j = 0; j < this.choiceArray[i].length; j++) {
       let fieldSet = document.createElement('fieldset');
       let labelContainer = document.createElement('label');
@@ -72,13 +73,11 @@ function Poll(choicePerRotation, rotationNumber) {
 
   this.voteProduct = function () {
     this.rotation++;
-    let imageContainer = document.getElementById('image-container');
     let productPicked = parseInt(document.querySelector('input[name=product-select]:checked').value);
     this.productArray[productPicked].vote++;
     if (this.rotation === rotationNumber) {
       this.displayResults();
     } else {
-      imageContainer.innerHTML = '';
       this.generateRandomProducts();
       this.renderImage(this.rotation);
     }
@@ -192,41 +191,60 @@ function Poll(choicePerRotation, rotationNumber) {
 // eslint-disable-next-line
 function reset() {
   localStorage.removeItem('object');
-  location.reload();
+  clearResults();
+  polling = new Poll(3, 25);
+  polling.executeOrder66();
+  trigger();
 }
 // eslint-disable-next-line
 function cont() {
   if (polling.rotation === 25) {
-    let imageContainer = document.getElementById('image-container');
-    let resultsContainer = document.getElementById('results');
-    let canvasContainerOne = document.getElementById('absolute');
-    let canvasContainerTwo = document.getElementById('relative');
-    imageContainer.innerHTML = '';
-    resultsContainer.style.display = 'none';
-    canvasContainerOne.innerHTML = '';
-    canvasContainerTwo.innerHTML = '';
     polling.rotation = 0;
     polling.choiceArray = [];
     polling.generateRandomProducts();
-    polling.renderImage(polling.rotation);
     localStorage.setItem('object', JSON.stringify(polling));
-    location.reload();
+    polling.renderImage(polling.rotation);
+    clearResults();
+    trigger();
   } else {
     alert('You haven\'t finished voting for this set yet.');
   }
 }
 
-document.getElementById('image-container').addEventListener('click', function runVote(event) {
-  if (polling.rotation === polling.maxTurns) {
-    document.getElementById('image-container').removeEventListener('click', runVote, false);
-  }
-  else if (document.querySelector('input[name=product-select]:checked')) {
-    polling.voteProduct();
-    event.preventDefault();
-  }
-}, false);
+function clearResults() {
+  let resultsContainer = document.getElementById('results');
+  let canvasContainerOne = document.getElementById('absolute');
+  let canvasContainerTwo = document.getElementById('relative');
+  let canvasOneParent = canvasContainerOne.parentNode;
+  let canvasTwoParent = canvasContainerTwo.parentNode;
+  resultsContainer.style.display = 'none';
+  canvasOneParent.removeChild(canvasContainerOne);
+  canvasTwoParent.removeChild(canvasContainerTwo);
+
+  let canvasOneRebuilt = document.createElement('canvas');
+  let canvasTwoReBuilt = document.createElement('canvas');
+
+  canvasOneRebuilt.setAttribute('id', 'absolute');
+  canvasTwoReBuilt.setAttribute('id', 'relative');
+
+  canvasOneParent.appendChild(canvasOneRebuilt);
+  canvasTwoParent.appendChild(canvasTwoReBuilt);
+}
+
+function trigger() {
+  document.getElementById('image-container').addEventListener('click', function runVote(event) {
+    if (polling.rotation === polling.maxTurns) {
+      document.getElementById('image-container').removeEventListener('click', runVote, false);
+    }
+    else if (document.querySelector('input[name=product-select]:checked')) {
+      polling.voteProduct();
+      event.preventDefault();
+    }
+  }, false);
+}
 
 window.onload = function () {
+  trigger();
   let retrievedPollingData = JSON.parse(localStorage.getItem('object'));
   if (retrievedPollingData !== null) {
     polling.rotation = retrievedPollingData.rotation;
