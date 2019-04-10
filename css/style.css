@@ -42,7 +42,7 @@ header p {
   width: 100%;
 }
 
-#image-container fieldset label{
+#image-container fieldset label:hover{
   cursor: pointer;
 }
 
@@ -51,10 +51,10 @@ header p {
   text-decoration-line: underline;
 }
 
-#image-container fieldset img{
-  width: 100%;
+#image-container fieldset label img{
+  max-height: 150px;
   margin-top: 15px;
-  border-radius: 20px;
+  border-radius: 15px;
   background-color: royalblue;
 }
 
@@ -69,6 +69,7 @@ input[type=radio] {
 #results div {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   width: 100%;
 }
 

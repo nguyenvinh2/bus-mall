@@ -92,19 +92,13 @@ function Poll(choicePerRotation, rotationNumber) {
     let absoluteData = [];
     let views = [];
     let label = [];
-    let backColor = [];
-    let borColor = [];
+
 
     for (let i = 0; i < this.productArray.length; i++) {
-      let colorR = Math.floor(Math.random() * 256);
-      let colorG = Math.floor(Math.random() * 256);
-      let colorB = Math.floor(Math.random() * 256);
       absoluteData.push(this.productArray[i].vote);
       views.push(this.productArray[i].views);
       relativeData.push((absoluteData[i] / views[i] * 100).toFixed(1));
       label.push(this.productArray[i].name);
-      borColor.push(`rgba(${colorR}, ${colorG}, ${colorB}, 1)`);
-      backColor.push(`rgba(${colorR}, ${colorG}, ${colorB}, .3)`);
     }
     // eslint-disable-next-line
     new Chart(resultsAbsolute, {
@@ -114,8 +108,15 @@ function Poll(choicePerRotation, rotationNumber) {
         datasets: [{
           label: '# of Votes',
           data: absoluteData,
-          backgroundColor: backColor,
-          borderColor: borColor,
+          backgroundColor: 'rgba(175,125,225,.3)',
+          borderColor: 'rgba(125,125,125,1)',
+          borderWidth: 1
+        },
+        {
+          label: '# of Views',
+          data: views,
+          backgroundColor: 'rgba(125,225,145,.3)',
+          borderColor: 'rgba(125,225,145,1)',
           borderWidth: 1
         }]
       },
@@ -148,8 +149,8 @@ function Poll(choicePerRotation, rotationNumber) {
         datasets: [{
           label: 'Percentage Clicked On',
           data: relativeData,
-          backgroundColor: backColor,
-          borderColor: borColor,
+          backgroundColor: 'rgba(75,135,225,.3)',
+          borderColor: 'rgba(75,135,225,1)',
           borderWidth: 1
         }]
       },
