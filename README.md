@@ -1,4 +1,4 @@
-# bus-mall
+# [bus-mall](https://nguyenvinh2.github.io/bus-mall/)
 
 ## Introduction
 
@@ -11,6 +11,9 @@
     (and never show any image twice in a row) and asks the user to select the most prefered item. 
     The application will collect the polling data and display the results at the end once the user 
     has provided enough data.
+
+    Local Storage is used for data persistence so the user doesn't not have to restart the process
+    after exiting the application.
 
 ## Author
 
@@ -26,6 +29,11 @@
 
 ## Version
 
-    V0.5: 4/08/19: Images rendered in JS
+    V0.5: 4/08/19: Images rendered in JS. Voting mechanics completed.
+    V.06: 4/09/19: Added Charts for displaying results. Style work
+    V0.7: 4/10/19: Added Local Storage for data persistence.
+    V1.0: 4/11/19: Refactored to avoid reloading browser. Application completed.
 
 ## Output
+
+![Results](assets/image.png)
