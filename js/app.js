@@ -232,8 +232,7 @@ function trigger() {
   document.getElementById('image-container').addEventListener('click', function runVote(event) {
     if (polling.rotation === polling.maxTurns) {
       document.getElementById('image-container').removeEventListener('click', runVote, false);
-    }
-    else if (document.querySelector('input[name=product-select]:checked')) {
+    } else if (document.querySelector('input[name=product-select]:checked')) {
       polling.voteProduct();
       event.preventDefault();
     }
