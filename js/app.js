@@ -198,7 +198,7 @@ function reset() {
 }
 // eslint-disable-next-line
 function cont() {
-  if (polling.rotation === 25) {
+  if (polling.rotation === polling.maxTurns) {
     polling.rotation = 0;
     polling.choiceArray = [];
     polling.generateRandomProducts();
