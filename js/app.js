@@ -220,13 +220,10 @@ function clearResults() {
   resultsContainer.style.display = 'none';
   canvasOneParent.removeChild(canvasContainerOne);
   canvasTwoParent.removeChild(canvasContainerTwo);
-
   let canvasOneRebuilt = document.createElement('canvas');
   let canvasTwoReBuilt = document.createElement('canvas');
-
   canvasOneRebuilt.setAttribute('id', 'absolute');
   canvasTwoReBuilt.setAttribute('id', 'relative');
-
   canvasOneParent.appendChild(canvasOneRebuilt);
   canvasTwoParent.appendChild(canvasTwoReBuilt);
 }
